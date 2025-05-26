@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
-import Snackbar, { type SnackbarOrigin } from '@mui/material/Snackbar';
+import { toast } from 'react-toastify';
 
 import { registerUser } from '../../api/auth';
 
@@ -41,28 +41,11 @@ export default function Register() {
     try {
       await registerUser(data);
       navigate('/login');
-      setSnackbarState({
-        ...snackbarState, open: true, msg: "Registered Successfully!"
-      })
+      toast.success('Success!', { autoClose: 3000 });
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Registration failed');
     }
   };
-  interface SnackbarState extends SnackbarOrigin {
-    open: boolean;
-    msg: string;
-  }
-  const [snackbarState, setSnackbarState] = useState<SnackbarState>({
-    open: false,
-    vertical: 'top',
-    horizontal: 'center',
-    msg: "",
-  });
-
-  const handleClose = () => {
-    setSnackbarState({ ...snackbarState, open: false });
-  };
-
 
   return (
     <Container maxWidth="xs">
@@ -114,13 +97,6 @@ export default function Register() {
             </Button>
           </form>
         </Box>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-          open={snackbarState.open}
-          onClose={handleClose}
-          message={snackbarState.msg}
-          key={"register-result"}
-        />
       </Box>
     </Container>
   );

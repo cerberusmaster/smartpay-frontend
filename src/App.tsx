@@ -6,6 +6,10 @@ import Dashboard from './features/wallet/Dashboard';
 import AdminUsers from './features/admin/Users';
 import { AuthProvider } from './context/AuthContext';
 import PublicLayout from './layouts/PublicLayout';
+import SidebarLayout from './layouts/SidebarLayout';
+import SendMoney from './features/wallet/SendMoney';
+import TransactionHistory from './features/wallet/TransactionHistory';
+
 
 function App() {
   return (
@@ -13,14 +17,17 @@ function App() {
       <Routes>
         {/* Default redirect */}
         <Route path="/" element={<PublicLayout />} >
-
           {/* Public routes */}
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
           {/* Protected routes */}
           <Route element={<RequireAuth />}>
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route element={<SidebarLayout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/send" element={<SendMoney />} />
+              <Route path="/transactions" element={<TransactionHistory />} />
+            </Route>
             <Route path="/admin/users" element={<AdminUsers />} />
           </Route>
 

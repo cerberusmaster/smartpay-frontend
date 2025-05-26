@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 
 export default function PublicLayout() {
-  const { isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -20,7 +20,7 @@ export default function PublicLayout() {
       <AppBar position="absolute">
         <Toolbar>
           <Box flexGrow={9}>
-            <Typography variant="h6">Smart Pay</Typography>
+            <Typography variant="h6">{user?.email ?? "Smart Pay"}</Typography>
           </Box>
           {isAuthenticated && (
             <Button color="inherit" onClick={logout}>
