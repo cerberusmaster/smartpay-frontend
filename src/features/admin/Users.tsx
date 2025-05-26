@@ -26,7 +26,7 @@ export default function AdminUsers() {
                         <TableRow key={user.id}>
                             <TableCell>{user.email}</TableCell>
                             <TableCell>{user.phone}</TableCell>
-                            <TableCell>${user.wallet.balance}</TableCell>
+                            <TableCell>${user.wallet?.balance}</TableCell>
                         </TableRow>
                     ))}
                 </TableBody>

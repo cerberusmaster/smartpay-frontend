@@ -8,9 +8,12 @@ import {
   Typography,
   Box,
   Alert,
+  Link as MuiLink
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import Snackbar, { type SnackbarOrigin } from '@mui/material/Snackbar';
+
 import { registerUser } from '../../api/auth';
 
 // Zod schema for form validation
@@ -38,53 +41,86 @@ export default function Register() {
     try {
       await registerUser(data);
       navigate('/login');
+      setSnackbarState({
+        ...snackbarState, open: true, msg: "Registered Successfully!"
+      })
     } catch (err: any) {
       setError(err?.response?.data?.message || 'Registration failed');
     }
   };
+  interface SnackbarState extends SnackbarOrigin {
+    open: boolean;
+    msg: string;
+  }
+  const [snackbarState, setSnackbarState] = useState<SnackbarState>({
+    open: false,
+    vertical: 'top',
+    horizontal: 'center',
+    msg: "",
+  });
+
+  const handleClose = () => {
+    setSnackbarState({ ...snackbarState, open: false });
+  };
+
 
   return (
     <Container maxWidth="xs">
-      <Box mt={10}>
-        <Typography variant="h5" mb={2}>
-          Register
-        </Typography>
+      <Box
+        display="flex"
+        alignItems="center"
+        justifyContent="center"
+        height="100vh">
+        <Box width="100%">
+          <Typography variant="h5" mb={2}>
+            Register or <MuiLink component={Link} to="/login" underline="hover">
+              Login
+            </MuiLink>
+          </Typography>
 
-        {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
 
-        <form onSubmit={handleSubmit(onSubmit)} noValidate>
-          <TextField
-            fullWidth
-            label="Email"
-            {...register('email')}
-            error={!!errors.email}
-            helperText={errors.email?.message}
-            margin="normal"
-          />
+          <form onSubmit={handleSubmit(onSubmit)} noValidate>
+            <TextField
+              fullWidth
+              label="Email"
+              {...register('email')}
+              error={!!errors.email}
+              helperText={errors.email?.message}
+              margin="normal"
+            />
 
-          <TextField
-            fullWidth
-            label="Phone"
-            {...register('phone')}
-            error={!!errors.phone}
-            helperText={errors.phone?.message}
-            margin="normal"
-          />
+            <TextField
+              fullWidth
+              label="Phone"
+              {...register('phone')}
+              error={!!errors.phone}
+              helperText={errors.phone?.message}
+              margin="normal"
+            />
 
-          <TextField
-            fullWidth
-            label="Password"
-            type="password"
-            {...register('password')}
-            error={!!errors.password}
-            helperText={errors.password?.message}
-            margin="normal"
-          />
+            <TextField
+              fullWidth
+              label="Password"
+              type="password"
+              {...register('password')}
+              error={!!errors.password}
+              helperText={errors.password?.message}
+              margin="normal"
+            />
 
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
-            Create Account
-          </Button>
-        </form>
+            <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
+              Create Account
+            </Button>
+          </form>
+        </Box>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+          open={snackbarState.open}
+          onClose={handleClose}
+          message={snackbarState.msg}
+          key={"register-result"}
+        />
       </Box>
     </Container>
   );

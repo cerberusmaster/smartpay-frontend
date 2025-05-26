@@ -1,6 +1,7 @@
 import { Navigate, Outlet } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 export default function RequireAuth() {
-  const token = localStorage.getItem('token');
-  return token ? <Outlet /> : <Navigate to="/login" />;
+  const { isAuthenticated } = useAuth();
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" />;
 }

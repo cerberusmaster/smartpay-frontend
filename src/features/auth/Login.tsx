@@ -1,16 +1,21 @@
 import { useForm } from 'react-hook-form';
-import { TextField, Button, Container, Typography, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { TextField, Button, Container, Typography, Box, Link as MuiLink } from '@mui/material';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 import { login } from '../../api/auth';
+import type { LoginData, LoginResponse } from '../../types/user';
 
 export default function Login() {
-  const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+  const { register, handleSubmit } = useForm<LoginData>();
+  const { setToken } = useAuth();
 
-  const onSubmit = async (data: any) => {
-    const res = await login(data);
-    localStorage.setItem('token', res.data.token);
-    navigate('/dashboard');
+  const onSubmit = async (loginData: LoginData) => {
+    login(loginData).then((res: { data: LoginResponse }) => {
+      setToken(res.data.access_token);
+      navigate('/dashboard');
+    }).catch((error: any) => {
+    });
   };
 
   return (
@@ -23,7 +28,9 @@ export default function Login() {
       >
         <Box width="100%">
           <Typography variant="h5" mb={2} textAlign="center">
-            Login
+            Login or <MuiLink component={Link} to="/register" underline="hover">
+              Register
+            </MuiLink>
           </Typography>
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextField

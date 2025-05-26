@@ -5,6 +5,6 @@ export const login = (data: { email: string; password: string }) =>
 
 export const registerUser = (data: {
   email: string;
-  phone: string;  
+  phone: string;
   password: string;
 }) => axios.post('/auth/register', data);
