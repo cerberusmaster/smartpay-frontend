@@ -3,7 +3,7 @@ import { toast } from 'react-toastify';
 import axios from "../../api/axios";
 import { useAuth } from '../../context/AuthContext';
 import { getUserNameFromEmail } from '../../utils/utils';
-import TopUpModal from './TopUpModal';
+import TopUpModal from '../../features/wallet/TopUpModal';
 
 export default function Dashboard() {
     const { user, reload } = useAuth();
