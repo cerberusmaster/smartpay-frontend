@@ -9,7 +9,6 @@ import {
     useTheme,
     useMediaQuery,
 } from '@mui/material';
-// import { useAuth } from '../../context/AuthContext';
 import axios from "../../api/axios";
 import { useEffect, useState } from 'react';
 
@@ -36,7 +35,7 @@ type TransactionResponse = {
 
 export default function TransactionHistory() {
     // const { user, isAuthenticated } = useAuth();
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     // const { data, isLoading } = useQuery<TransactionResponse>({
     //     queryKey: ['transaction-history'],
@@ -64,7 +63,7 @@ export default function TransactionHistory() {
 
             console.log(combinedTransactions);
             setData(combinedTransactions);
-        }).catch((error) => {
+        }).catch(() => {
         }).finally(() => {
             setIsLoading(false);
         })

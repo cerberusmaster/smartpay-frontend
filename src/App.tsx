@@ -1,17 +1,17 @@
 import { Routes, Route, Navigate } from 'react-router-dom';
-import Login from './features/auth/Login';
-import Register from './features/auth/Register';
+import Login from './pages/auth/Login';
+import Register from './pages/auth/Register';
 import RequireAuth from './features/auth/RequireAuth';
-import Dashboard from './features/wallet/Dashboard';
-import AdminUsers from './features/admin/Users';
+import Dashboard from './pages/wallet/Dashboard';
+import AdminUsers from './pages/admin/Users';
 import { AuthProvider } from './context/AuthContext';
 import PublicLayout from './layouts/PublicLayout';
 import SidebarLayout from './layouts/SidebarLayout';
-import SendMoney from './features/wallet/SendMoney';
-import TransactionHistory from './features/wallet/TransactionHistory';
+import SendMoney from './pages/wallet/SendMoney';
+import TransactionHistory from './pages/wallet/TransactionHistory';
 import AdminLayout from './layouts/AdminLayout';
-import Transactions from './features/admin/Transactions';
-import Wallets from './features/admin/Wallets';
+import Transactions from './pages/admin/Transactions';
+import Wallets from './pages/admin/Wallets';
 
 function App() {
   return (

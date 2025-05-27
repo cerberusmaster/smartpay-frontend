@@ -9,5 +9,6 @@
     "paths": {
       "@/*": ["./*"]
     },
+    "types": ["vitest/globals", "vite/client", "node"]
   }
 }

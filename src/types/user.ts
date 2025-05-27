@@ -1,8 +1,9 @@
+export type Role = 'admin' | 'guest' | 'user';
 export type User = {
     id: string;
     email: string;
     phone: string;
-    role: 'admin' | 'guest' | 'user';
+    role: Role;
     is_verified?: boolean;
     wallet?: Wallet;
 };
