@@ -19,6 +19,7 @@ export default function Dashboard() {
                             <CardContent>
                                 <Box display="flex" alignItems="center" flexDirection="column" mb={2}>
                                     <Typography variant="h3">{getUserNameFromEmail(user.email)}</Typography>
+                                    <Typography variant="h6">role - {user.role}</Typography>
                                     <Typography color="text.secondary">{user?.email}</Typography>
                                     <Typography color="text.secondary">{user?.phone}</Typography>
                                 </Box>

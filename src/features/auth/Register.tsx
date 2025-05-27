@@ -43,7 +43,8 @@ export default function Register() {
       navigate('/login');
       toast.success('Success!', { autoClose: 3000 });
     } catch (err: any) {
-      setError(err?.response?.data?.message || 'Registration failed');
+      console.log(err?.response?.data?.detail)
+      setError(err?.response?.data?.detail[0].msg || err?.response?.data?.detail || 'Registration failed');
     }
   };
 

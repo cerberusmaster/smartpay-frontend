@@ -28,9 +28,7 @@ export default function SendMoney() {
     const onSubmit = (data: SendMoneyFormData) => {
         setIsSending(true);
         axios.post('/wallet/transfer', data).then((res: { data: { message: string, new_balance: number } }) => {
-            console.log(res.data);
             toast.success('Success!', { autoClose: 3000 });
-            navigate('/dashboard');
         }).catch((error) => {
 
         }).finally(() => {

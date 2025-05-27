@@ -9,7 +9,9 @@ import PublicLayout from './layouts/PublicLayout';
 import SidebarLayout from './layouts/SidebarLayout';
 import SendMoney from './features/wallet/SendMoney';
 import TransactionHistory from './features/wallet/TransactionHistory';
-
+import AdminLayout from './layouts/AdminLayout';
+import Transactions from './features/admin/Transactions';
+import Wallets from './features/admin/Wallets';
 
 function App() {
   return (
@@ -28,7 +30,11 @@ function App() {
               <Route path="/send" element={<SendMoney />} />
               <Route path="/transactions" element={<TransactionHistory />} />
             </Route>
-            <Route path="/admin/users" element={<AdminUsers />} />
+            <Route path='/admin' element={<AdminLayout />}>
+              <Route path="/admin/users" element={<AdminUsers />} />
+              <Route path="/admin/transactions" element={<Transactions />} />
+              <Route path="/admin/wallets" element={<Wallets />} />
+            </Route>
           </Route>
 
           {/* Catch-all fallback */}

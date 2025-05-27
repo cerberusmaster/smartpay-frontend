@@ -7,19 +7,28 @@ export default function PublicLayout() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (isAuthenticated === false) {
-      navigate('/login');
-    } else {
-      navigate('/dashboard');
-    }
-  }, [isAuthenticated]);
+  // useEffect(() => {
+  //   if (isAuthenticated === false) {
+  //     navigate('/login');
+  //   } else {
+  //     navigate('/dashboard');
+  //   }
+  // }, [isAuthenticated]);
+
+  const onAdmin = () => {
+    navigate('/admin/users')
+  }
 
   return (
     <Box>
       <AppBar position="absolute">
         <Toolbar>
-          <Box flexGrow={9}>
+          <Box display={'flex'} flexGrow={9} flexDirection={'row'} gap={5}>
+            {isAuthenticated && user?.role === "admin" && (
+              <Button color="inherit" onClick={onAdmin}>
+                Admin
+              </Button>
+            )}
             <Typography variant="h6">{user?.email ?? "Smart Pay"}</Typography>
           </Box>
           {isAuthenticated && (

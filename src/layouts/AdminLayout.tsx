@@ -1,15 +1,30 @@
-import { Outlet } from 'react-router-dom';
-import { AppBar, Box, Toolbar, Typography, Container } from '@mui/material';
+import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { AppBar, Box, Toolbar, Typography, Container, Stack } from '@mui/material';
+import { useAuth } from '../context/AuthContext';
+import { useEffect } from 'react';
 
 export default function AdminLayout() {
-    return (
-        <Box>
-            <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6">SmartPay Admin</Typography>
-                </Toolbar>
-            </AppBar>
+    const { user, isAuthenticated } = useAuth();
+    const navigate = useNavigate();
+  
+    useEffect(() => {
+      if (isAuthenticated === false) {
+        navigate('/login');
+      } else {
+        if (user?.role === "admin")
+            navigate('/admin/users');
+        else
+            navigate('/dashboard');
+      }
+    }, [isAuthenticated]);
 
+    return (
+        <Box mt={10}>
+            <Stack direction={'row'} gap={4} pl={4}>
+                <Link to={'/admin/users'}>Users</Link>
+                <Link to={'/admin/transactions'}>Transactions</Link>
+                <Link to={'/admin/wallets'}>Wallets</Link>
+            </Stack>
             <Container sx={{ mt: 4 }}>
                 <Outlet />
             </Container>

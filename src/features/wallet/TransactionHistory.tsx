@@ -11,8 +11,7 @@ import {
 } from '@mui/material';
 // import { useAuth } from '../../context/AuthContext';
 import axios from "../../api/axios";
-import { useQuery } from '@tanstack/react-query';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Transaction = {
     id: number;

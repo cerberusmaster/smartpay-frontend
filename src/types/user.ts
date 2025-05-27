@@ -2,6 +2,7 @@ export type User = {
     id: string;
     email: string;
     phone: string;
+    role: 'admin' | 'guest' | 'user';
     is_verified?: boolean;
     wallet?: Wallet;
 };
@@ -19,7 +20,11 @@ export type LoginResponse = {
 export type Wallet = {
     id: string,
     user_id: string,
-    balance: number
+    balance: number,
+    user?: {
+        id: string,
+        email: string
+    }
 }
 
 export type Transaction = {
