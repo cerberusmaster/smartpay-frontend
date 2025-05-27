@@ -17,12 +17,15 @@ type Transaction = {
     id: number;
     amount: number;
     timestamp: string;
-    type: string;
+    type: "top-up" | "transfer";
     status: string;
     sender_id: number;
     receiver_id: number;
-    sender_user: { id: number; email: string };
-    receiver_user: { id: number; email: string };
+    direction: string,
+    otherParty?: string,
+    displayAmount?: string,
+    sender_user?: { id: number; email: string };
+    receiver_user?: { id: number; email: string };
 };
 
 type TransactionResponse = {
@@ -44,22 +47,22 @@ export default function TransactionHistory() {
 
     useEffect(() => {
         axios.post('/wallet/transactions').then((res: { data: TransactionResponse }) => {
-            console.log(res.data);
             const combinedTransactions = [
                 ...(res.data?.sent_transactions.map((tx: any) => ({
                     ...tx,
                     direction: 'sent',
-                    otherParty: tx.receiver_user.email,
+                    otherParty: tx.receiver_user?.email,
                     displayAmount: `-$${tx.amount}`,
                 })) || []),
                 ...(res.data?.received_transactions.map((tx: any) => ({
                     ...tx,
                     direction: 'received',
-                    otherParty: tx.sender_user.email,
+                    otherParty: tx.sender_user?.email,
                     displayAmount: `+$${tx.amount}`,
                 })) || []),
             ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // Descending order
 
+            console.log(combinedTransactions);
             setData(combinedTransactions);
         }).catch((error) => {
         }).finally(() => {
@@ -104,6 +107,7 @@ export default function TransactionHistory() {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Type</TableCell>
+                                    <TableCell></TableCell>
                                     <TableCell>Email</TableCell>
                                     <TableCell>Amount</TableCell>
                                     <TableCell>Date</TableCell>
@@ -111,8 +115,9 @@ export default function TransactionHistory() {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {data?.map((tx: any) => (
+                                {data?.map((tx: Transaction) => (
                                     <TableRow key={`${tx.direction}-${tx.id}`}>
+                                        <TableCell>{tx.type}</TableCell>
                                         <TableCell>
                                             <Chip
                                                 label={tx.direction === 'sent' ? 'Sent' : 'Received'}

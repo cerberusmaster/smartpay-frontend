@@ -7,13 +7,13 @@ export default function PublicLayout() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   if (isAuthenticated === false) {
-  //     navigate('/login');
-  //   } else {
-  //     navigate('/dashboard');
-  //   }
-  // }, [isAuthenticated]);
+  useEffect(() => {
+    if (isAuthenticated === false) {
+      navigate('/login');
+    } else {
+      navigate('/dashboard');
+    }
+  }, []);
 
   const onAdmin = () => {
     navigate('/admin/users')

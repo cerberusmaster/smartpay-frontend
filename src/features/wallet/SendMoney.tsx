@@ -3,7 +3,7 @@ import { Typography, Box, Container, TextField, InputAdornment, Button } from '@
 import { useState } from 'react';
 import { toast } from 'react-toastify';
 import axios from '../../api/axios';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../context/AuthContext';
 
 type SendMoneyFormData = {
     recipient: string;
@@ -13,12 +13,10 @@ type SendMoneyFormData = {
 
 
 export default function SendMoney() {
-    const navigate = useNavigate();
-
+    const { reload } = useAuth();
     const {
         register,
         handleSubmit,
-        reset,
         formState: { errors },
     } = useForm<SendMoneyFormData>();
 
@@ -28,9 +26,12 @@ export default function SendMoney() {
     const onSubmit = (data: SendMoneyFormData) => {
         setIsSending(true);
         axios.post('/wallet/transfer', data).then((res: { data: { message: string, new_balance: number } }) => {
-            toast.success('Success!', { autoClose: 3000 });
+            toast.success('Success! $' + res.data.new_balance + ' left.', { autoClose: 3000 });
+            // window.location.reload();
+            reload();
         }).catch((error) => {
-
+            console.log(error)
+            toast.warning('Failed', { autoClose: 1500 });
         }).finally(() => {
             setIsSending(false);
         })

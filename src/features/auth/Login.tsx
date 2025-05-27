@@ -4,11 +4,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { login } from '../../api/auth';
 import type { LoginData, LoginResponse } from '../../types/user';
+import { useEffect } from 'react';
 
 export default function Login() {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<LoginData>();
-  const { setToken } = useAuth();
+  const { setToken, isAuthenticated } = useAuth();
 
   const onSubmit = async (loginData: LoginData) => {
     login(loginData).then((res: { data: LoginResponse }) => {
@@ -17,6 +18,12 @@ export default function Login() {
     }).catch((error: any) => {
     });
   };
+
+  useEffect(() => {
+    if (isAuthenticated)
+      navigate('/dashboard');
+
+  }, [isAuthenticated]);
 
   return (
     <Container maxWidth="xs">

@@ -7,6 +7,7 @@ export default function SidebarLayout() {
     const navigate = useNavigate();
 
     const menuItems = [
+        { text: 'Dashboard', path: '/dashboard' },
         { text: 'Send Money', path: '/send' },
         { text: 'Transaction History', path: '/transactions' },
     ];

@@ -41,6 +41,7 @@ export default function Transactions() {
                         <TableCell>Type</TableCell>
                         <TableCell>Amount</TableCell>
                         <TableCell>Date</TableCell>
+                        <TableCell>Status</TableCell>
                         <TableCell>Sender</TableCell>
                         <TableCell>Receiver</TableCell>
                     </TableRow>
@@ -57,6 +58,7 @@ export default function Transactions() {
                             </TableCell>
                             <TableCell>${tx.amount}</TableCell>
                             <TableCell>{formatDate(tx.timestamp)}</TableCell>
+                            <TableCell>{tx.status}</TableCell>
                             <TableCell>{tx.sender?.email}</TableCell>
                             <TableCell>{tx.receiver?.email}</TableCell>
                         </TableRow>

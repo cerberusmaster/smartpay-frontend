@@ -1,9 +1,23 @@
-import { Card, CardContent, Typography, Box, Avatar, Divider, Container } from '@mui/material';
+import { Card, CardContent, Typography, Box, Divider, Container } from '@mui/material';
+import { toast } from 'react-toastify';
+import axios from "../../api/axios";
 import { useAuth } from '../../context/AuthContext';
 import { getUserNameFromEmail } from '../../utils/utils';
+import TopUpModal from './TopUpModal';
 
 export default function Dashboard() {
-    const { user, isAuthenticated } = useAuth();
+    const { user, reload } = useAuth();
+
+    const onSubmit = (amount: number) => {
+        axios.post('/wallet/topup', { amount }).then((res: { data: { message: string, new_balance: number } }) => {
+            toast.success(res.data.message + " $" + res.data.new_balance + ' left.', { autoClose: 3000 });
+            reload();
+        }).catch((error) => {
+            console.log(error)
+            toast.warning('Failed', { autoClose: 1500 });
+        }).finally(() => {
+        })
+    };
 
     return (
         <Container maxWidth="xs">
@@ -25,11 +39,15 @@ export default function Dashboard() {
                                 </Box>
 
                                 <Divider sx={{ my: 2 }} />
-
-                                <Typography variant="body1">Wallet Balance</Typography>
-                                <Typography variant="h4" color="primary" mt={1}>
-                                    ${user?.wallet?.balance ?? '0.00'}
-                                </Typography>
+                                <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
+                                    <Box>
+                                        <Typography variant="body1">Wallet Balance</Typography>
+                                        <Typography variant="h4" color="primary" mt={1}>
+                                            ${user?.wallet?.balance ?? '0.00'}
+                                        </Typography>
+                                    </Box>
+                                    <TopUpModal open={false} amount={10} onSubmit={onSubmit} />
+                                </Box>
                             </CardContent>
                         </Card>
                     }
