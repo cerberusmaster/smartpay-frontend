@@ -11,10 +11,10 @@ import {
   Link as MuiLink
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
-import { registerUser } from '../../api/auth';
+import { get_csrf_token, registerUser } from '../../api/auth';
 
 // Zod schema for form validation
 const schema = z.object({
@@ -38,8 +38,15 @@ export default function Register() {
   });
 
   const onSubmit = async (data: FormData) => {
+    let csrf_token;
     try {
-      await registerUser(data);
+      const ret = await get_csrf_token();
+      csrf_token = ret.data.csrf_token;
+    } catch (err: any) {
+      console.log(err)
+    }
+    try {
+      await registerUser(data, csrf_token);
       navigate('/login');
       toast.success('Success!', { autoClose: 3000 });
     } catch (err: any) {
