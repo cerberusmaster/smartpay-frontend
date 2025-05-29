@@ -1,16 +1,10 @@
 version: '3.8'
 
 services:
-  frontend:
+  app:
     build: .
     ports:
-      - "3000:3000"
+      - "3000:80"
     environment:
       VITE_API_URL: http://localhost:8000
       VITE_ENV: development
-    networks:
-      - backend-network  # Connect to backend network
-
-networks:
-  backend-network:
-    external: true      # Use existing Docker network created by backend service
