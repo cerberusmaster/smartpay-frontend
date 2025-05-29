@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from 'react-router-dom';
-import { AppBar, Box, Toolbar, Typography, Container, Stack } from '@mui/material';
+import { Box, Container, Stack } from '@mui/material';
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
 

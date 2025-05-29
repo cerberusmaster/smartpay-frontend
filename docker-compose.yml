@@ -11,8 +11,6 @@ services:
       - backend
     networks:
       - app-network
-    env_file:
-      - .env
 
   backend:
     build:

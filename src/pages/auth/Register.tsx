@@ -11,7 +11,7 @@ import {
   Link as MuiLink
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-toastify';
 
 import { get_csrf_token, registerUser } from '../../api/auth';

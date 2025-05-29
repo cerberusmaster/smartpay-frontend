@@ -15,7 +15,7 @@ export default function Login() {
     login(loginData).then((res: { data: LoginResponse }) => {
       setToken(res.data.access_token);
       navigate('/dashboard');
-    }).catch((error: any) => {
+    }).catch(() => {
     });
   };
 
