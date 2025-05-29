@@ -1,21 +1,24 @@
 import { useForm } from 'react-hook-form';
-import { TextField, Button, Container, Typography, Box, Link as MuiLink } from '@mui/material';
+import { TextField, Button, Container, Typography, Box, Link as MuiLink, Alert } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { login } from '../../api/auth';
 import type { LoginData, LoginResponse } from '../../types/user';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Login() {
   const navigate = useNavigate();
   const { register, handleSubmit } = useForm<LoginData>();
   const { setToken, isAuthenticated } = useAuth();
+  const [error, setError] = useState('');
 
   const onSubmit = async (loginData: LoginData) => {
     login(loginData).then((res: { data: LoginResponse }) => {
       setToken(res.data.access_token);
       navigate('/dashboard');
-    }).catch(() => {
+    }).catch((err) => {
+      console.log(err?.response?.data?.detail)
+      setError(err?.response?.data?.detail[0].msg || err?.response?.data?.detail || 'Registration failed');
     });
   };
 
@@ -39,6 +42,8 @@ export default function Login() {
               Register
             </MuiLink>
           </Typography>
+
+          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
           <form onSubmit={handleSubmit(onSubmit)}>
             <TextField
               fullWidth

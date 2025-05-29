@@ -15,43 +15,66 @@ export default function Dashboard() {
         }).catch((error) => {
             console.log(error)
             toast.warning('Failed', { autoClose: 1500 });
-        }).finally(() => {
-        })
+        });
     };
 
     return (
-        <Container maxWidth="xs">
+        <Container maxWidth="sm" sx={{ py: 4 }}>
             <Box
                 display="flex"
                 alignItems="center"
                 justifyContent="center"
-                height="100vh"
+                minHeight="80vh"
             >
-                <Box mt={5} display="flex" justifyContent="center">
-                    {
-                        !!user && <Card sx={{ width: 400, p: 2 }}>
-                            <CardContent>
-                                <Box display="flex" alignItems="center" flexDirection="column" mb={2}>
-                                    <Typography variant="h3">{getUserNameFromEmail(user.email)}</Typography>
-                                    <Typography variant="h6">role - {user.role}</Typography>
-                                    <Typography color="text.secondary">{user?.email}</Typography>
-                                    <Typography color="text.secondary">{user?.phone}</Typography>
+                {!!user && (
+                    <Card
+                        sx={{
+                            width: '100%',               // Full width on small devices
+                            maxWidth: 400,               // Max width on larger screens
+                            p: { xs: 2, sm: 3 },        // Responsive padding
+                            boxShadow: 3,
+                            borderRadius: 2,
+                        }}
+                    >
+                        <CardContent>
+                            <Box display="flex" alignItems="center" flexDirection="column" mb={2}>
+                                <Typography variant="h4" component="h1" textAlign="center" sx={{ fontWeight: 'bold', mb: 1 }}>
+                                    {getUserNameFromEmail(user.email)}
+                                </Typography>
+                                <Typography variant="subtitle1" color="text.secondary" mb={0.5}>
+                                    Role: {user.role}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" noWrap sx={{ width: '100%', textAlign: 'center' }}>
+                                    {user.email}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" noWrap sx={{ width: '100%', textAlign: 'center' }}>
+                                    {user.phone}
+                                </Typography>
+                            </Box>
+
+                            <Divider sx={{ my: 2 }} />
+
+                            <Box
+                                display="flex"
+                                flexDirection={{ xs: 'column', sm: 'row' }}   // Stack on xs, row on sm+
+                                justifyContent="space-between"
+                                alignItems={{ xs: 'stretch', sm: 'center' }}
+                                gap={2}
+                            >
+                                <Box textAlign={{ xs: 'center', sm: 'left' }}>
+                                    <Typography variant="body1">Wallet Balance</Typography>
+                                    <Typography variant="h4" color="primary" mt={1}>
+                                        ${user.wallet?.balance ?? '0.00'}
+                                    </Typography>
                                 </Box>
 
-                                <Divider sx={{ my: 2 }} />
-                                <Box display={'flex'} flexDirection={'row'} justifyContent={'space-between'}>
-                                    <Box>
-                                        <Typography variant="body1">Wallet Balance</Typography>
-                                        <Typography variant="h4" color="primary" mt={1}>
-                                            ${user?.wallet?.balance ?? '0.00'}
-                                        </Typography>
-                                    </Box>
+                                <Box display="flex" justifyContent={{ xs: 'center', sm: 'flex-end' }}>
                                     <TopUpModal open={false} amount={10} onSubmit={onSubmit} />
                                 </Box>
-                            </CardContent>
-                        </Card>
-                    }
-                </Box>
+                            </Box>
+                        </CardContent>
+                    </Card>
+                )}
             </Box>
         </Container>
     );

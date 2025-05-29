@@ -6,7 +6,7 @@ yarn-error.log
 pnpm-debug.log
 
 # Local env files (optional — remove if you want to copy them into container)
-.env
+# .env
 .env.*.local
 *.env.local
 
