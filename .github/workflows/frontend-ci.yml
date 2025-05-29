@@ -58,7 +58,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: ./frontend
-          file: ./frontend/Dockerfile
+          file: ./Dockerfile
           push: true
           tags: robert0318docker/smartpay-frontend-app:latest
