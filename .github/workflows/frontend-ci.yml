@@ -55,6 +55,11 @@ jobs:
           password: dckr_pat_SpUckDoZN9QMy8KkO5YO8Sdz_0o
 # ${{ secrets.DOCKER_PASSWORD }}
 
+      - name: List files in workspace
+        run: |
+          echo "Current directory: $(pwd)"
+          ls -al
+
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
