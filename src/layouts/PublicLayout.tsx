@@ -1,11 +1,13 @@
-import { Box, AppBar, Toolbar, Typography, Button } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, Button, IconButton, useTheme } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';
+import { AccountBalance, AdminPanelSettings, Logout } from '@mui/icons-material';
 
 export default function PublicLayout() {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const theme = useTheme();
 
   useEffect(() => {
     if (isAuthenticated === false) {
@@ -20,25 +22,70 @@ export default function PublicLayout() {
   }
 
   return (
-    <Box>
-      <AppBar position="absolute">
+    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+      <AppBar 
+        position="fixed" 
+        elevation={1}
+        sx={{ 
+          backgroundColor: 'background.paper',
+          color: 'text.primary',
+          borderBottom: 1,
+          borderColor: 'divider',
+          zIndex: theme.zIndex.drawer + 1
+        }}
+      >
         <Toolbar>
-          <Box display={'flex'} flexGrow={9} flexDirection={'row'} gap={5}>
+          <Box display="flex" alignItems="center" gap={1} flexGrow={1}>
+            <AccountBalance color="primary" />
+            <Typography variant="h6" color="primary" fontWeight="bold">
+              Smart Pay
+            </Typography>
+          </Box>
+          
+          <Box display="flex" alignItems="center" gap={2}>
             {isAuthenticated && user?.role === "admin" && (
-              <Button color="inherit" onClick={onAdmin}>
+              <Button
+                color="primary"
+                startIcon={<AdminPanelSettings />}
+                onClick={onAdmin}
+                sx={{ 
+                  textTransform: 'none',
+                  '&:hover': {
+                    backgroundColor: 'action.hover'
+                  }
+                }}
+              >
                 Admin
               </Button>
             )}
-            <Typography variant="h6">{user?.email ?? "Smart Pay"}</Typography>
+            {isAuthenticated && (
+              <Button
+                color="primary"
+                startIcon={<Logout />}
+                onClick={logout}
+                sx={{ 
+                  textTransform: 'none',
+                  '&:hover': {
+                    backgroundColor: 'action.hover'
+                  }
+                }}
+              >
+                Logout
+              </Button>
+            )}
           </Box>
-          {isAuthenticated && (
-            <Button color="inherit" onClick={logout}>
-              Logout
-            </Button>
-          )}
         </Toolbar>
       </AppBar>
-      <Outlet />
+      <Box 
+        component="main" 
+        sx={{
+          pt: '64px', // Height of AppBar
+          backgroundColor: 'background.default',
+          height: 'calc(100vh - 64px)'
+        }}
+      >
+        <Outlet />
+      </Box>
     </Box>
   );
 }

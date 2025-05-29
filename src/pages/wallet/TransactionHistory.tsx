@@ -1,5 +1,8 @@
 import {
-    Typography, Box, Divider, Container,
+    Typography, 
+    Box, 
+    Container,
+    Paper,
     Table,
     TableBody,
     TableCell,
@@ -8,9 +11,12 @@ import {
     Chip,
     useTheme,
     useMediaQuery,
+    CircularProgress,
+    Divider
 } from '@mui/material';
 import axios from "../../api/axios";
 import { useEffect, useState } from 'react';
+import { History, TrendingUp, TrendingDown } from '@mui/icons-material';
 
 type Transaction = {
     id: number;
@@ -32,17 +38,11 @@ type TransactionResponse = {
     received_transactions: Transaction[];
 };
 
-
 export default function TransactionHistory() {
-    // const { user, isAuthenticated } = useAuth();
     const [isLoading, setIsLoading] = useState(true);
-
-    // const { data, isLoading } = useQuery<TransactionResponse>({
-    //     queryKey: ['transaction-history'],
-    //     queryFn: () => axios.get('/wallet/transactions').then((res) => res.data),
-    // });
-
     const [data, setData] = useState<Transaction[]>();
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     useEffect(() => {
         axios.post('/wallet/transactions').then((res: { data: TransactionResponse }) => {
@@ -59,20 +59,14 @@ export default function TransactionHistory() {
                     otherParty: tx.sender_user?.email,
                     displayAmount: `+$${tx.amount}`,
                 })) || []),
-            ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()); // Descending order
+            ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime());
 
-            console.log(combinedTransactions);
             setData(combinedTransactions);
         }).catch(() => {
         }).finally(() => {
             setIsLoading(false);
         })
     }, []);
-
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-    if (isLoading) return <Typography>Loading...</Typography>;
 
     const dateFormatted = (ts: string) => {
         return new Date(ts).toLocaleString(undefined, {
@@ -84,104 +78,158 @@ export default function TransactionHistory() {
         })
     }
 
+    if (isLoading) {
+        return (
+            <Container maxWidth="lg" sx={{ 
+                py: 4,
+                minHeight: 'calc(100vh - 64px)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+            }}>
+                <CircularProgress />
+            </Container>
+        );
+    }
+
     return (
-        <Container>
-            <Box
-                display="flex"
-                alignItems="flex-start"
-                justifyContent="flex-start"
-                flexDirection={'column'}
-                mt={8}
-                width={"100%"}
-                height="100vh"
+        <Container maxWidth="lg" sx={{ 
+            py: 4,
+            minHeight: 'calc(100vh - 64px)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
+            <Paper 
+                elevation={3}
+                sx={{ 
+                    p: 4,
+                    width: '100%',
+                    borderRadius: 2
+                }}
             >
-                <Typography variant="h5" mt={4} gutterBottom>
-                    Transaction History
-                </Typography>
-                <Divider sx={{ mb: 2 }} />
-                <Container maxWidth="lg">
-                    {!isMobile ? (
-                        // Desktop Table
-                        <Table size="small">
-                            <TableHead>
-                                <TableRow>
-                                    <TableCell>Type</TableCell>
-                                    <TableCell></TableCell>
-                                    <TableCell>Email</TableCell>
-                                    <TableCell>Amount</TableCell>
-                                    <TableCell>Date</TableCell>
-                                    <TableCell>Status</TableCell>
-                                </TableRow>
-                            </TableHead>
-                            <TableBody>
-                                {data?.map((tx: Transaction) => (
-                                    <TableRow key={`${tx.direction}-${tx.id}`}>
-                                        <TableCell>{tx.type}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={tx.direction === 'sent' ? 'Sent' : 'Received'}
-                                                color={tx.direction === 'sent' ? 'info' : 'success'}
-                                                size="small"
-                                            />
-                                        </TableCell>
-                                        <TableCell>{tx.otherParty}</TableCell>
-                                        <TableCell>{tx.displayAmount}</TableCell>
-                                        <TableCell>{dateFormatted(tx.timestamp)}</TableCell>
-                                        <TableCell>
-                                            <Chip
-                                                label={tx.status}
-                                                color={tx.status === 'pending' ? 'warning' : 'success'}
-                                                size="small"
-                                            />
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    ) : (
-                        // Mobile Card View
-                        <Box display="flex" flexDirection="column" gap={2}>
-                            {data?.map((tx: any) => (
-                                <Box
-                                    key={`${tx.direction}-${tx.id}`}
-                                    border={1}
-                                    borderColor="grey.300"
-                                    borderRadius={2}
-                                    p={2}
-                                    display="flex"
-                                    flexDirection="column"
-                                    gap={0.5}
-                                    sx={{ p: 2 }}
-                                >
-                                    <Box display="flex" justifyContent="space-between">
+                <Box textAlign="center" mb={4}>
+                    <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+                        Transaction History
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary">
+                        View your recent transactions
+                    </Typography>
+                </Box>
+
+                <Divider sx={{ mb: 4 }} />
+
+                {!isMobile ? (
+                    // Desktop Table
+                    <Table size="small">
+                        <TableHead>
+                            <TableRow>
+                                <TableCell>Type</TableCell>
+                                <TableCell>Direction</TableCell>
+                                <TableCell>Email</TableCell>
+                                <TableCell>Amount</TableCell>
+                                <TableCell>Date</TableCell>
+                                <TableCell>Status</TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {data?.map((tx: Transaction) => (
+                                <TableRow key={`${tx.direction}-${tx.id}`} hover>
+                                    <TableCell>
                                         <Chip
-                                            label={tx.direction === 'sent' ? 'Sent' : 'Received'}
-                                            color={tx.direction === 'sent' ? 'info' : 'success'}
+                                            label={tx.type === 'top-up' ? 'Top-Up' : 'Transfer'}
+                                            color={tx.type === 'top-up' ? 'primary' : 'default'}
                                             size="small"
                                         />
+                                    </TableCell>
+                                    <TableCell>
+                                        <Chip
+                                            label={tx.direction === 'sent' ? 'Sent' : 'Received'}
+                                            color={tx.direction === 'sent' ? 'error' : 'success'}
+                                            size="small"
+                                            icon={tx.direction === 'sent' ? <TrendingDown /> : <TrendingUp />}
+                                        />
+                                    </TableCell>
+                                    <TableCell>{tx.otherParty}</TableCell>
+                                    <TableCell>
+                                        <Typography 
+                                            color={tx.direction === 'sent' ? 'error.main' : 'success.main'}
+                                            fontWeight="medium"
+                                        >
+                                            {tx.displayAmount}
+                                        </Typography>
+                                    </TableCell>
+                                    <TableCell>{dateFormatted(tx.timestamp)}</TableCell>
+                                    <TableCell>
                                         <Chip
                                             label={tx.status}
                                             color={tx.status === 'pending' ? 'warning' : 'success'}
                                             size="small"
                                         />
-                                    </Box>
-                                    <Typography mt={1}>
-                                        <strong>{tx.direction === 'sent' ? 'To' : 'From'}:</strong>{' '}
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                ) : (
+                    // Mobile Card View
+                    <Box display="flex" flexDirection="column" gap={2}>
+                        {data?.map((tx: Transaction) => (
+                            <Paper
+                                key={`${tx.direction}-${tx.id}`}
+                                elevation={1}
+                                sx={{ 
+                                    p: 2,
+                                    borderRadius: 2,
+                                    borderLeft: 6,
+                                    borderColor: tx.direction === 'sent' ? 'error.main' : 'success.main'
+                                }}
+                            >
+                                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                                    <Chip
+                                        label={tx.type === 'top-up' ? 'Top-Up' : 'Transfer'}
+                                        color={tx.type === 'top-up' ? 'primary' : 'default'}
+                                        size="small"
+                                    />
+                                    <Chip
+                                        label={tx.status}
+                                        color={tx.status === 'pending' ? 'warning' : 'success'}
+                                        size="small"
+                                    />
+                                </Box>
+                                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        {tx.direction === 'sent' ? 'To' : 'From'}:
+                                    </Typography>
+                                    <Typography variant="body2">
                                         {tx.otherParty}
                                     </Typography>
-                                    <Typography>
-                                        <strong>Amount:</strong> {tx.displayAmount}
+                                </Box>
+                                <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                                    <Typography variant="body2" color="text.secondary">
+                                        Amount:
                                     </Typography>
-                                    <Typography>
-                                        <strong>Date:</strong> {dateFormatted(tx.timestamp)}
+                                    <Typography 
+                                        variant="body1" 
+                                        color={tx.direction === 'sent' ? 'error.main' : 'success.main'}
+                                        fontWeight="medium"
+                                    >
+                                        {tx.displayAmount}
                                     </Typography>
                                 </Box>
-                            ))}
-                        </Box>
-                    )}
-
-                </Container>
-            </Box>
+                                <Box display="flex" justifyContent="space-between" alignItems="center">
+                                    <Typography variant="body2" color="text.secondary">
+                                        Date:
+                                    </Typography>
+                                    <Typography variant="body2">
+                                        {dateFormatted(tx.timestamp)}
+                                    </Typography>
+                                </Box>
+                            </Paper>
+                        ))}
+                    </Box>
+                )}
+            </Paper>
         </Container>
     );
 }

@@ -31,7 +31,7 @@ export default function Wallets() {
   return (
     <Container>
       <Typography variant="h5" mt={4}>
-        All Transactions
+        All Wallets
       </Typography>
 
       <TableContainer sx={{ overflowX: 'auto', mt: 2 }}>

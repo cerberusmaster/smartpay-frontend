@@ -3,54 +3,97 @@ import {
   List,
   ListItem,
   ListItemButton,
+  ListItemIcon,
   ListItemText,
   useTheme,
   useMediaQuery,
   Tooltip,
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Divider,
+  Avatar
 } from '@mui/material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SendIcon from '@mui/icons-material/Send';
 import HistoryIcon from '@mui/icons-material/History';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { AccountBalance, Logout } from '@mui/icons-material';
 
 export default function SidebarLayout() {
   const navigate = useNavigate();
+  const location = useLocation();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const { user, logout } = useAuth();
 
-  // Add icon to each menu item
   const menuItems = [
     { text: 'Dashboard', path: '/dashboard', icon: <DashboardIcon /> },
     { text: 'Send Money', path: '/send', icon: <SendIcon /> },
     { text: 'Transactions', path: '/transactions', icon: <HistoryIcon /> },
   ];
 
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(word => word[0])
+      .join('')
+      .toUpperCase();
+  };
+
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
+    <Box sx={{ display: 'flex', height: 'calc(100vh - 64px)' }}>
+      {/* Sidebar */}
       <Box
-        paddingTop={8}
         sx={{
-          backgroundColor: '#adb9c4',
-          width: isMobile ? 60 : 200, // narrower on mobile
+          width: isMobile ? 64 : 240,
+          flexShrink: 0,
+          backgroundColor: 'background.paper',
+          borderRight: 1,
+          borderColor: 'divider',
+          display: 'flex',
+          flexDirection: 'column'
         }}
       >
-        <List>
+
+        {/* Navigation Menu */}
+        <List sx={{ flexGrow: 1, pt: 2 }}>
           {menuItems.map((item) => (
-            <ListItem key={item.text} disablePadding sx={{ justifyContent: 'center' }}>
+            <ListItem key={item.text} disablePadding>
               <Tooltip title={isMobile ? item.text : ''} placement="right">
                 <ListItemButton
                   onClick={() => navigate(item.path)}
+                  selected={location.pathname === item.path}
                   sx={{
-                    display: 'flex',
-                    justifyContent: isMobile ? 'center' : 'flex-start',
-                    px: 2,
+                    minHeight: 48,
+                    px: 2.5,
+                    '&.Mui-selected': {
+                      backgroundColor: 'action.selected',
+                      '&:hover': {
+                        backgroundColor: 'action.selected',
+                      },
+                    },
                   }}
                 >
-                  {item.icon}
+                  <ListItemIcon 
+                    sx={{ 
+                      minWidth: 0,
+                      mr: isMobile ? 'auto' : 3,
+                      justifyContent: 'center',
+                      color: location.pathname === item.path ? 'primary.main' : 'inherit'
+                    }}
+                  >
+                    {item.icon}
+                  </ListItemIcon>
                   {!isMobile && (
-                    <ListItemText
+                    <ListItemText 
                       primary={item.text}
-                      sx={{ ml: 2 }}
+                      primaryTypographyProps={{
+                        fontWeight: location.pathname === item.path ? 'bold' : 'normal',
+                        color: location.pathname === item.path ? 'primary.main' : 'inherit'
+                      }}
                     />
                   )}
                 </ListItemButton>
@@ -58,8 +101,67 @@ export default function SidebarLayout() {
             </ListItem>
           ))}
         </List>
+
+        {/* User Profile Section */}
+        <Box 
+          sx={{ 
+            p: 2,
+            borderTop: 1,
+            borderColor: 'divider',
+            display: 'flex',
+            alignItems: 'center',
+            gap: 2
+          }}
+        >
+          <Avatar 
+            sx={{ 
+              bgcolor: 'primary.main',
+              width: isMobile ? 32 : 40,
+              height: isMobile ? 32 : 40,
+              fontSize: isMobile ? '0.875rem' : '1rem'
+            }}
+          >
+            {getInitials(user?.email || '')}
+          </Avatar>
+          {!isMobile && (
+            <Box sx={{ flexGrow: 1, minWidth: 0 }}>
+              <Typography variant="body2" noWrap>
+                {user?.email}
+              </Typography>
+              <Typography variant="caption" color="text.secondary" noWrap>
+                {user?.role}
+              </Typography>
+            </Box>
+          )}
+          <Tooltip title="Logout">
+            <Button
+              color="primary"
+              onClick={logout}
+              sx={{ 
+                minWidth: 0,
+                p: isMobile ? 1 : 2,
+                '&:hover': {
+                  backgroundColor: 'action.hover'
+                }
+              }}
+            >
+              <Logout />
+            </Button>
+          </Tooltip>
+        </Box>
       </Box>
-      <Box component="main" sx={{ flexGrow: 1 }}>
+
+      {/* Main Content */}
+      <Box 
+        component="main" 
+        sx={{ 
+          flexGrow: 1,
+          backgroundColor: 'background.default',
+          height: 'calc(100vh - 64px)',
+          display: 'flex',
+          flexDirection: 'column'
+        }}
+      >
         <Outlet />
       </Box>
     </Box>

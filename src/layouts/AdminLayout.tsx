@@ -19,13 +19,13 @@ export default function AdminLayout() {
     }, [isAuthenticated]);
 
     return (
-        <Box mt={10}>
-            <Stack direction={'row'} gap={4} pl={4}>
+        <Box mt={0}>
+            <Stack direction={'row'} gap={4} pl={4} mt={4}>
                 <Link to={'/admin/users'}>Users</Link>
                 <Link to={'/admin/transactions'}>Transactions</Link>
                 <Link to={'/admin/wallets'}>Wallets</Link>
             </Stack>
-            <Container sx={{ mt: 4 }}>
+            <Container>
                 <Outlet />
             </Container>
         </Box>

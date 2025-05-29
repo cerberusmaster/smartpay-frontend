@@ -8,11 +8,16 @@ import {
   Typography,
   Box,
   Alert,
-  Link as MuiLink
+  Link as MuiLink,
+  Paper,
+  InputAdornment,
+  IconButton,
+  CircularProgress
 } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { Visibility, VisibilityOff, Email, Lock, Phone } from '@mui/icons-material';
 
 import { get_csrf_token, registerUser } from '../../api/auth';
 
@@ -28,6 +33,8 @@ type FormData = z.infer<typeof schema>;
 export default function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const {
     register,
@@ -38,20 +45,28 @@ export default function Register() {
   });
 
   const onSubmit = async (data: FormData) => {
+    setLoading(true);
+    setError('');
     let csrf_token;
     try {
       const ret = await get_csrf_token();
       csrf_token = ret.data.csrf_token;
     } catch (err: any) {
-      console.log(err)
+      console.log(err);
+      setError('Failed to get CSRF token');
+      setLoading(false);
+      return;
     }
+    
     try {
       await registerUser(data, csrf_token);
       navigate('/login');
-      toast.success('Success!', { autoClose: 3000 });
+      toast.success('Registration successful! Please login.', { autoClose: 3000 });
     } catch (err: any) {
-      console.log(err?.response?.data?.detail)
-      setError(err?.response?.data?.detail[0].msg || err?.response?.data?.detail || 'Registration failed');
+      console.log(err?.response?.data?.detail);
+      setError(err?.response?.data?.detail[0]?.msg || err?.response?.data?.detail || 'Registration failed');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -61,15 +76,40 @@ export default function Register() {
         display="flex"
         alignItems="center"
         justifyContent="center"
-        height="100vh">
-        <Box width="100%">
-          <Typography variant="h5" mb={2}>
-            Register or <MuiLink component={Link} to="/login" underline="hover">
-              Login
-            </MuiLink>
-          </Typography>
+        minHeight="100vh"
+        py={4}
+      >
+        <Paper 
+          elevation={3} 
+          sx={{ 
+            p: 4, 
+            width: '100%',
+            borderRadius: 2,
+            backgroundColor: 'background.paper'
+          }}
+        >
+          <Box textAlign="center" mb={4}>
+            <Typography variant="h4" component="h1" gutterBottom fontWeight="bold" color="primary">
+              Create Account
+            </Typography>
+            <Typography variant="body1" color="text.secondary">
+              Join us and start your journey
+            </Typography>
+          </Box>
 
-          {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
+          {error && (
+            <Alert 
+              severity="error" 
+              sx={{ 
+                mb: 3,
+                '& .MuiAlert-message': {
+                  width: '100%'
+                }
+              }}
+            >
+              {error}
+            </Alert>
+          )}
 
           <form onSubmit={handleSubmit(onSubmit)} noValidate>
             <TextField
@@ -79,6 +119,15 @@ export default function Register() {
               error={!!errors.email}
               helperText={errors.email?.message}
               margin="normal"
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Email color="action" />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 2 }}
             />
 
             <TextField
@@ -88,23 +137,82 @@ export default function Register() {
               error={!!errors.phone}
               helperText={errors.phone?.message}
               margin="normal"
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Phone color="action" />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 2 }}
             />
 
             <TextField
               fullWidth
               label="Password"
-              type="password"
+              type={showPassword ? 'text' : 'password'}
               {...register('password')}
               error={!!errors.password}
               helperText={errors.password?.message}
               margin="normal"
+              variant="outlined"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Lock color="action" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={() => setShowPassword(!showPassword)}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+              sx={{ mb: 3 }}
             />
 
-            <Button type="submit" variant="contained" fullWidth sx={{ mt: 2 }}>
-              Create Account
+            <Button
+              type="submit"
+              variant="contained"
+              fullWidth
+              size="large"
+              disabled={loading}
+              sx={{
+                py: 1.5,
+                textTransform: 'none',
+                fontSize: '1.1rem',
+                borderRadius: 2,
+                boxShadow: 2,
+                '&:hover': {
+                  boxShadow: 4,
+                }
+              }}
+            >
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Create Account'}
             </Button>
+
+            <Box mt={3} textAlign="center">
+              <Typography variant="body2" color="text.secondary">
+                Already have an account?{' '}
+                <MuiLink 
+                  component={Link} 
+                  to="/login" 
+                  underline="hover"
+                  color="primary"
+                  fontWeight="bold"
+                >
+                  Sign In
+                </MuiLink>
+              </Typography>
+            </Box>
           </form>
-        </Box>
+        </Paper>
       </Box>
     </Container>
   );
