@@ -3,39 +3,16 @@ version: '3.8'
 services:
   frontend:
     build:
-      context: ./smartpay-frontend
+      context: .
       dockerfile: Dockerfile
     ports:
-      - "3000:80"
-    depends_on:
-      - backend
-    networks:
-      - app-network
-
-  backend:
-    build:
-      context: ./smartpay-backend
+      - "3000:3000"
     environment:
-      - DATABASE_URL=postgres://postgres:password@db:5432/smartpay
-    depends_on:
-      - db
+      VITE_API_URL: http://localhost:8000
+      VITE_ENV: development
     networks:
-      - app-network
-
-  db:
-    image: postgres:14
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: smartpay
-    volumes:
-      - db_data:/var/lib/postgresql/data
-    networks:
-      - app-network
-
-volumes:
-  db_data:
+      - backend-network  # Connect to backend network
 
 networks:
-  app-network:
+  backend-network:
+    external: true      # Use existing Docker network created by backend service
