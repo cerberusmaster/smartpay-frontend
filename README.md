@@ -13,8 +13,6 @@ This is the frontend React application for the SmartPay platform. It provides th
   - [Setup](#setup)
   - [Environment Variables](#environment-variables)
   - [Testing](#testing)
-- [React + TypeScript + Vite](#react--typescript--vite)
-  - [Expanding the ESLint configuration](#expanding-the-eslint-configuration)
 ---
 
 ## Tech Stack
@@ -65,14 +63,12 @@ cd smartpay-frontend
 Install dependencies:
 ```bash
 npm install
-# or
-yarn install
 ```
 
 Create a .env file in the root (if needed) for environment variables:
 
 ```bash
-REACT_APP_API_BASE_URL=http://localhost:8000/api
+VITE_API_URL=http://localhost:8000
 ```
 
 Running Locally (Development Mode)
@@ -80,8 +76,6 @@ Start the React development server:
 
 ```bash
 npm start
-# or
-yarn start
 ```
 
 This will run the app at http://localhost:3000 with hot-reloading.
@@ -90,15 +84,13 @@ Create a production-ready build:
 
 ```bash
 npm run build
-# or
-yarn build
 ```
 
 This generates optimized static files in the /dist folder.
 
-Docker Deployment
-Dockerfile
-Your Dockerfile builds the React app and serves it with Nginx:
+Docker Deployment Dockerfile<br/>
+
+Your **Dockerfile** builds the React app and serves it with Nginx:
 
 ```bash
 # Build stage
@@ -140,8 +132,9 @@ Visit http://localhost:3000 to see your frontend.
 
 
 ## Environment Variables
-**VITE_API_URL**
-**VITE_ENV**
+VITE_API_URL
+<br/>
+VITE_ENV
 
 ## Testing
 Add your test setup here (e.g., Jest + React Testing Library):
@@ -150,58 +143,3 @@ Add your test setup here (e.g., Jest + React Testing Library):
 npm run test
 ```
 
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
