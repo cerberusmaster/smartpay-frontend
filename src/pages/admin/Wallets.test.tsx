@@ -29,7 +29,7 @@ describe('Wallets component', () => {
         render(<Wallets />);
 
         await waitFor(() => {
-            expect(screen.getByText('All Transactions')).toBeInTheDocument();
+            expect(screen.getByText('All Wallets')).toBeInTheDocument();
         });
 
         // Check for wallet rows

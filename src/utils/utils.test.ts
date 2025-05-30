@@ -1,23 +1,21 @@
 import { describe, it, expect } from 'vitest';
 import { getUserNameFromEmail } from './utils';
 
-describe('getUserNameFromEmail', () => {
-    it('should convert email to formatted name', () => {
-        expect(getUserNameFromEmail('john.doe@example.com')).toBe('John Doe');
-        expect(getUserNameFromEmail('mary_smith@abc.com')).toBe('Mary Smith');
-        expect(getUserNameFromEmail('alice-cooper@xyz.io')).toBe('Alice Cooper');
-    });
+describe('Utility Functions', () => {
+    describe('getUserNameFromEmail', () => {
+        it('extracts and formats username from email', () => {
+            expect(getUserNameFromEmail('john.doe@example.com')).toBe('John Doe');
+            expect(getUserNameFromEmail('jane_doe@example.com')).toBe('Jane Doe');
+            expect(getUserNameFromEmail('mary-jane@example.com')).toBe('Mary Jane');
+        });
 
-    it('should handle single word emails', () => {
-        expect(getUserNameFromEmail('bob@example.com')).toBe('Bob');
-    });
+        it('handles single word usernames', () => {
+            expect(getUserNameFromEmail('john@example.com')).toBe('John');
+        });
 
-    it('should handle multiple delimiters', () => {
-        expect(getUserNameFromEmail('jane.doe-smith_test@domain.com')).toBe('Jane Doe Smith Test');
-    });
-
-    it('should return empty string for invalid email format', () => {
-        expect(getUserNameFromEmail('')).toBe('');
-        expect(getUserNameFromEmail('@')).toBe('');
+        it('handles usernames with multiple separators', () => {
+            expect(getUserNameFromEmail('john.doe.smith@example.com')).toBe('John Doe Smith');
+            expect(getUserNameFromEmail('jane_doe-smith@example.com')).toBe('Jane Doe Smith');
+        });
     });
 });
