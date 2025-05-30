@@ -5,22 +5,19 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Typography,
   useTheme,
   useMediaQuery,
   Tooltip,
-  AppBar,
-  Toolbar,
-  Typography,
   Button,
-  Divider,
   Avatar
 } from '@mui/material';
+import { Outlet, useNavigate, useLocation } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { Logout } from '@mui/icons-material';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import SendIcon from '@mui/icons-material/Send';
 import HistoryIcon from '@mui/icons-material/History';
-import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
-import { AccountBalance, Logout } from '@mui/icons-material';
 
 export default function SidebarLayout() {
   const navigate = useNavigate();

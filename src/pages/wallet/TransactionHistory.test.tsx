@@ -11,7 +11,7 @@ vi.mock('@mui/material', () => ({
             {children}
         </div>
     ),
-    Typography: ({ children, variant, component, sx, gutterBottom, fontWeight, color }: any) => {
+    Typography: ({ children, component, sx, fontWeight, color }: any) => {
         const Component = component || 'div';
         return (
             <Component style={{ ...sx, fontWeight, color }}>
@@ -24,15 +24,15 @@ vi.mock('@mui/material', () => ({
             {children}
         </div>
     ),
-    Table: ({ children, sx, size }: any) => <table style={sx}>{children}</table>,
+    Table: ({ children, sx }: any) => <table style={sx}>{children}</table>,
     TableBody: ({ children }: any) => <tbody>{children}</tbody>,
     TableCell: ({ children, align, sx }: any) => <td style={{ textAlign: align, ...sx }}>{children}</td>,
     TableContainer: ({ children, sx }: any) => <div style={sx}>{children}</div>,
     TableHead: ({ children }: any) => <thead>{children}</thead>,
     TableRow: ({ children, sx, hover }: any) => <tr style={{ ...sx, cursor: hover ? 'pointer' : 'default' }}>{children}</tr>,
-    Container: ({ children, maxWidth, sx }: any) => <div style={sx}>{children}</div>,
+    Container: ({ children, sx }: any) => <div style={sx}>{children}</div>,
     CircularProgress: () => <div>Loading...</div>,
-    Chip: ({ label, color, size, icon }: any) => (
+    Chip: ({ label, color, icon }: any) => (
         <div style={{ 
             display: 'inline-block',
             padding: '4px 8px',
@@ -64,12 +64,11 @@ vi.mock('@mui/material', () => ({
     }),
     useMediaQuery: () => false,
     styled: (component: any) => component,
-    alpha: (color: string, opacity: number) => color
+    alpha: (color: string) => color
 }));
 
 // Mock Material-UI icons
 vi.mock('@mui/icons-material', () => ({
-    History: () => <div>History Icon</div>,
     TrendingUp: () => <div>Trending Up Icon</div>,
     TrendingDown: () => <div>Trending Down Icon</div>
 }));
@@ -113,14 +112,50 @@ describe('TransactionHistory', () => {
 
         renderWithAuth(<TransactionHistory />, { authProps: mockAuthenticatedUser });
 
+        // Check for loading state
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+        // Wait for transactions to load
         await waitFor(() => {
             expect(screen.getByText('Transaction History')).toBeInTheDocument();
         });
 
+        // Check for transaction types
+        expect(screen.getByText('Transfer')).toBeInTheDocument();
+        expect(screen.getByText('Top-Up')).toBeInTheDocument();
+
+        // Check for transaction amounts
+        expect(screen.getByText('-$50')).toBeInTheDocument();
+        expect(screen.getByText('+$100')).toBeInTheDocument();
+
+        // Check for transaction status
+        expect(screen.getAllByText('completed')).toHaveLength(2);
+
+        // Check for transaction parties
+        expect(screen.getByText('receiver@example.com')).toBeInTheDocument();
+        expect(screen.getByText('topup@example.com')).toBeInTheDocument();
     });
 
-    it('shows "Loading..." while fetching data', () => {
+    it('shows loading state initially', () => {
         renderWithAuth(<TransactionHistory />, { authProps: mockAuthenticatedUser });
-        expect(screen.queryByText('Loading...')).toBeInTheDocument();
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
+    });
+
+    it('handles API error gracefully', async () => {
+        (axios.post as any).mockRejectedValue(new Error('API Error'));
+
+        renderWithAuth(<TransactionHistory />, { authProps: mockAuthenticatedUser });
+
+        // Check for loading state
+        expect(screen.getByText('Loading...')).toBeInTheDocument();
+
+        // Wait for error state
+        await waitFor(() => {
+            expect(screen.getByText('Transaction History')).toBeInTheDocument();
+        });
+
+        // Check that no transactions are shown
+        expect(screen.queryByText('Transfer')).not.toBeInTheDocument();
+        expect(screen.queryByText('Top-Up')).not.toBeInTheDocument();
     });
 }); 

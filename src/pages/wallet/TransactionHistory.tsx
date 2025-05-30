@@ -16,7 +16,7 @@ import {
 } from '@mui/material';
 import axios from "../../api/axios";
 import { useEffect, useState } from 'react';
-import { History, TrendingUp, TrendingDown } from '@mui/icons-material';
+import { TrendingUp, TrendingDown } from '@mui/icons-material';
 
 type Transaction = {
     id: number;

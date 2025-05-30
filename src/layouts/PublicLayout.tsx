@@ -1,4 +1,4 @@
-import { Box, AppBar, Toolbar, Typography, Button, IconButton, useTheme } from '@mui/material';
+import { Box, AppBar, Toolbar, Typography, Button, useTheme } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useEffect } from 'react';

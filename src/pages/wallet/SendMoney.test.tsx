@@ -1,4 +1,4 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import SendMoney from './SendMoney';
 import { vi, describe, it, expect } from 'vitest';
 import { renderWithAuth, mockAuthenticatedUser } from '../../test-utils';

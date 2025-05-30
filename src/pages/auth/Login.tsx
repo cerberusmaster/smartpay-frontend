@@ -17,7 +17,7 @@ import {
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { login } from '../../api/auth';
-import type { LoginData, LoginResponse } from '../../types/user';
+import type { LoginData } from '../../types/user';
 import { useEffect, useState } from 'react';
 import { Visibility, VisibilityOff, Email, Lock } from '@mui/icons-material';
 
