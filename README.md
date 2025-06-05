@@ -29,19 +29,16 @@ This is the frontend React application for the SmartPay platform. It provides th
 ---
 
 ## Project Structure
-
-/src
-/api # Axios instance & API utils
-/components # Reusable UI components
-/context # React contexts (e.g. AuthContext)
-/features # Feature-based folders (wallet, auth, users, transactions)
-/types # TypeScript interfaces and types
-/utils # Utility functions
-Dockerfile # Dockerfile for building frontend image
-docker-compose.yml # Compose file for frontend + backend services
-.env # Environment variables
-
----
+```
+app/
+├── api/                # Axios instance & API utils
+├── components/         # Reusable UI components
+├── context/            # React contexts (e.g. AuthContext)
+├── features/           # Feature-based folders (wallet, auth, users, transactions)
+├── types/              # TypeScript interfaces and types
+├── utils/              # Utility functions
+└── .env                # Environment config
+```
 
 ## Prerequisites
 
